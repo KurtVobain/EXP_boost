@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: backend/Dockerfile
+        container_name: backend
+        ports:
+            - "3000:3000"
+        depends_on:
+            - db
+        environment:
+            - NODE_ENV=production
+            - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydatabase
+        volumes:
+            - .:/usr/src/app
+            - /usr/src/app/node_modules
+        command: npm run start
+
+    db:
+        image: postgres:13-alpine
+        container_name: db
+        environment:
+            POSTGRES_USER: myuser
+            POSTGRES_PASSWORD: mypassword
+            POSTGRES_DB: mydatabase
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+
+volumes:
+    postgres_data:
