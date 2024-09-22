@@ -2,14 +2,19 @@ FROM node:16-alpine
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
-RUN npm install
+ARG NODE_ENV=development
+RUN yarn install
 
 COPY . .
 
-RUN npm run build
+COPY ormconfig.json .
+
+RUN yarn build
+
+ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/server.js"]
