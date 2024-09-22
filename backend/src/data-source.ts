@@ -1,19 +1,20 @@
-import "reflect-metadata";
-import { DataSource } from "typeorm";
-import path from "path";
+import { DataSource } from "typeorm"
+import { User } from "./entities/User"
+import * as dotenv from "dotenv"
+
+dotenv.config()
 
 const AppDataSource = new DataSource({
-  type: "postgres",
-  host: "db",
-  port: 5432,
-  username: "myuser",
-  password: "mypassword",
-  database: "mydatabase",
-  synchronize: false,
-  logging: false,
-  entities: [path.join(__dirname, "entities/*.js")],
-  migrations: [path.join(__dirname, "migrations/*.js")],
-  subscribers: [],
-});
+    type: (process.env.DB_TYPE as any) || "postgres",
+    host: process.env.DB_HOST || "localhost",
+    port: Number(process.env.DB_PORT) || 5432,
+    username: process.env.DB_USERNAME || "expboost",
+    password: process.env.DB_PASSWORD || "mypassword",
+    database: process.env.DB_NAME || "expboost",
+    synchronize: false,
+    logging: true,
+    entities: [User],
+    migrations: ["src/migrations/*.ts"],
+})
 
-export default AppDataSource;
+export default AppDataSource

@@ -25,6 +25,6 @@
         "cpx": "cpx \"src/views/**/*\" dist/views",
         "start": "node dist/server.js",
         "dev": "ts-node src/server.ts",
-        "typeorm": "typeorm"
+        "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli"
     }
 }

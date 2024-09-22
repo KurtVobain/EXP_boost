@@ -10,9 +10,11 @@ services:
             - "3000:3000"
         depends_on:
             - db
+        env_file:
+            - .env
         environment:
             - NODE_ENV=production
-            - DATABASE_URL=postgresql://myuser:mypassword@db:5432/mydatabase
+            - DATABASE_URL=postgresql://expboost:mypassword@db:5432/expboost
         volumes:
             - ./backend:/usr/src/app
             - /usr/src/app/node_modules
@@ -22,9 +24,9 @@ services:
         image: postgres:13-alpine
         container_name: db
         environment:
-            POSTGRES_USER: myuser
+            POSTGRES_USER: expboost
             POSTGRES_PASSWORD: mypassword
-            POSTGRES_DB: mydatabase
+            POSTGRES_DB: expboost
         volumes:
             - postgres_data:/var/lib/postgresql/data
         ports:
