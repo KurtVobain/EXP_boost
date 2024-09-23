@@ -7,6 +7,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        "purple": "#492BFF",
+        "orange": "#FF7423",
+        "gray": "#AAAAAA"
       }
     },
   },

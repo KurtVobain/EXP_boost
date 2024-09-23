@@ -9,22 +9,66 @@
 }
 
 :root {
-  /* font-family: "", sans-serif; */
+  font-family: "Space_Grotesk", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: 1rem;
-
+  color: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding: 0;
+
+  --gradient: linear-gradient(to right, #492BFF, #7940FF);
+  --surface: linear-gradient(to right, #111727, #132248);
+}
+
+.borderGradient {
+  position: relative;
+  z-index: 1;
+  border-radius: 8px;
+  background-image: var(--surface)
+}
+
+.borderGradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: 8px; /* Радиус для градиента */
+  padding: 1px; /* Толщина границы */
+  background: linear-gradient(to right, #492BFF, #7940FF);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude; /* Чтобы оставить только границу */
+}
+.bgGradient {
+  background-image: var(--gradient);
 }
 
 body {
   margin: 0;
-  width: 100%;
+  padding: 0;
+  background-image: url('./images/background.jpg'); /* Относительный путь к файлу */
+  background-size: cover; /* Растягивает изображение, сохраняя пропорции */
+  background-position: center; /* Центрирует изображение */
+  background-repeat: no-repeat; /* Отключает повторение изображения */
+  height: 100vh; /* Высота 100% от высоты экрана */
+  width: 100vw; /* Ширина 100% от ширины экрана */
+}
+
+@font-face {
+  font-family: 'Space_Grotesk';
+  src: url('/fonts/SpaceGrotesk[wght].woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @layer utilities {
