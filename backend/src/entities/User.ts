@@ -1,6 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import { UserCourse } from "./UserCourse"
+import { UserTask } from "./UserTask"
+import { UserBattlePass } from "./UserBattlePass"
 
-@Entity()
+@Entity("Users")
 export class User {
     @PrimaryGeneratedColumn()
     id: number
@@ -17,6 +20,18 @@ export class User {
     @Column()
     password: string
 
-    @Column()
-    course: string
+    @Column({ default: 0 })
+    profileLevel: number
+
+    @Column({ default: 0 })
+    experience: number
+
+    @OneToMany(() => UserCourse, (userCourse) => userCourse.user)
+    userCourses: UserCourse[]
+
+    @OneToMany(() => UserTask, (userTask) => userTask.user)
+    userTasks: UserTask[]
+
+    @OneToMany(() => UserBattlePass, (userBattlePass) => userBattlePass.user)
+    userBattlePasses: UserBattlePass[]
 }
