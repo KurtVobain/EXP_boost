@@ -6,6 +6,10 @@
     "license": "MIT",
     "private": true,
     "devDependencies": {
+        "@metaplex-foundation/mpl-token-metadata": "^3.2.1",
+        "@metaplex-foundation/umi": "^0.9.2",
+        "@metaplex-foundation/umi-bundle-defaults": "^0.9.2",
+        "@metaplex-foundation/umi-storage-mock": "^0.9.2",
         "@types/express": "^4.17.21",
         "@types/node": "^22.5.5",
         "cpx": "^1.5.0",
