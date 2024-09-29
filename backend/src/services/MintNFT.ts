@@ -12,7 +12,7 @@ import {
     KeypairSigner,
     Keypair,
 } from "@metaplex-foundation/umi"
-import { nftStorageUploader } from "@metaplex-foundation/umi-uploader-nft-storage"
+import { mockStorage } from "@metaplex-foundation/umi-storage-mock"
 import * as fs from "fs"
 import { config } from "../config"
 import { NftDetail } from "../types/NftDetail"
@@ -36,7 +36,7 @@ class MintSolanaNFTService {
         this.umi
             .use(keypairIdentity(this.creator))
             .use(mplTokenMetadata())
-            .use(nftStorageUploader({ token: config.nftStorageApiKey }))
+            .use(mockStorage())
 
         this.nftDetail = {
             name: `${userName} Battlepass ${battlepassId}`,
