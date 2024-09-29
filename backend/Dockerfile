@@ -11,6 +11,7 @@ COPY . .
 COPY ormconfig.json .
 
 RUN yarn build
+RUN cp -r ./static ./dist/static
 
 ENV NODE_ENV=production
 
