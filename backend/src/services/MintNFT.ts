@@ -17,7 +17,7 @@ import * as fs from "fs"
 import { config } from "../config"
 import { NftDetail } from "../types/NftDetail"
 
-class MintNFTService {
+class MintSolanaNFTService {
     private umi = createUmi(config.rpcUrl)
     private creatorWallet: Keypair
     private creator: KeypairSigner
@@ -89,7 +89,7 @@ class MintNFTService {
         return metadataUri
     }
 
-    async mintNft() {
+    async mintNft(): Promise<string> {
         const imageUri = await this.uploadImage()
         const metadataUri = await this.uploadMetadata(imageUri)
 
@@ -109,11 +109,13 @@ class MintNFTService {
                     },
                 ],
             }).sendAndConfirm(this.umi)
-            console.log(`Created NFT: ${mint.publicKey.toString()}`)
+            let nftPubkey = mint.publicKey.toString()
+            console.log(`Created NFT: ${nftPubkey}`)
+            return nftPubkey
         } catch (e) {
             throw e
         }
     }
 }
 
-export default MintNFTService
+export default MintSolanaNFTService
