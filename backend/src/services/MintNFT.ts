@@ -12,7 +12,7 @@ import {
     KeypairSigner,
     Keypair,
 } from "@metaplex-foundation/umi"
-import { mockStorage } from "@metaplex-foundation/umi-storage-mock"
+import { nftStorageUploader } from "@metaplex-foundation/umi-uploader-nft-storage"
 import * as fs from "fs"
 import { config } from "../config"
 import { NftDetail } from "../types/NftDetail"
@@ -33,9 +33,10 @@ class MintSolanaNFTService {
             this.umi.eddsa.createKeypairFromSecretKey(secretKey)
         this.creator = createSignerFromKeypair(this.umi, this.creatorWallet)
 
-        this.umi.use(keypairIdentity(this.creator))
-        this.umi.use(mplTokenMetadata())
-        this.umi.use(mockStorage())
+        this.umi
+            .use(keypairIdentity(this.creator))
+            .use(mplTokenMetadata())
+            .use(nftStorageUploader({ token: config.nftStorageApiKey }))
 
         this.nftDetail = {
             name: `${userName} Battlepass ${battlepassId}`,
@@ -49,7 +50,7 @@ class MintSolanaNFTService {
     }
 
     async uploadImage(): Promise<string> {
-        const imgDirectory = "./uploads"
+        const imgDirectory = "./static/images"
         const imgName = "image.png"
         const filePath = `${imgDirectory}/${imgName}`
 
@@ -63,9 +64,14 @@ class MintSolanaNFTService {
             contentType: this.nftDetail.imgType,
         })
 
-        const [imgUri] = await this.umi.uploader.upload([image])
-        console.log("Uploaded image:", imgUri)
-        return imgUri
+        try {
+            const [imgUri] = await this.umi.uploader.upload([image])
+            console.log("Uploaded image:", imgUri)
+            return imgUri
+        } catch (error) {
+            console.error("Error uploading image to NFT storage:", error)
+            throw new Error("Image upload failed.")
+        }
     }
 
     async uploadMetadata(imageUri: string): Promise<string> {
@@ -84,9 +90,14 @@ class MintSolanaNFTService {
             },
         }
 
-        const metadataUri = await this.umi.uploader.uploadJson(metadata)
-        console.log("Uploaded metadata:", metadataUri)
-        return metadataUri
+        try {
+            const metadataUri = await this.umi.uploader.uploadJson(metadata)
+            console.log("Uploaded metadata:", metadataUri)
+            return metadataUri
+        } catch (error) {
+            console.error("Error uploading metadata to NFT storage:", error)
+            throw new Error("Metadata upload failed.")
+        }
     }
 
     async mintNft(): Promise<string> {

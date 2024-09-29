@@ -17,4 +17,5 @@ export const config = {
     walletSecret: process.env.SECRET
         ? process.env.SECRET.split(",").map((num) => parseInt(num.trim(), 10))
         : [],
+    nftStorageApiKey: process.env.NFT_STORAG_API_KEY || "",
 }
