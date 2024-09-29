@@ -1,10 +1,12 @@
 import "reflect-metadata"
 import express from "express"
 import AppDataSource from "./data-source"
+import battlepassRouter from "./routes/battlepass"
 
 const app = express()
 
 app.use(express.json())
+app.use("/api", battlepassRouter)
 
 app.get("/health", (req, res) => {
     res.status(200).send("OK")
