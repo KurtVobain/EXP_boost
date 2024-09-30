@@ -1,10 +1,6 @@
 {
     "type": "postgres",
-    "host": "db",
-    "port": 5432,
-    "username": "myuser",
-    "password": "mypassword",
-    "database": "mydatabase",
+    "url": "postgresql://expboost:mypassword@db:5432/expboost",
     "synchronize": false,
     "logging": false,
     "entities": ["dist/entities/**/*.js"],

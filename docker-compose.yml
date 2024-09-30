@@ -15,9 +15,9 @@ services:
         environment:
             - NODE_ENV=production
             - DATABASE_URL=postgresql://expboost:mypassword@db:5432/expboost
-        volumes:
-            - ./backend:/usr/src/app
-            - /usr/src/app/node_modules
+        # volumes:
+        #     - ./backend:/usr/src/app
+        #     - /usr/src/app/node_modules
         command: npm run start
 
     db:

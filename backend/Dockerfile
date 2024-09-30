@@ -1,10 +1,9 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
 COPY package.json yarn.lock ./
 
-ARG NODE_ENV=development
 RUN yarn install
 
 COPY . .
@@ -12,6 +11,7 @@ COPY . .
 COPY ormconfig.json .
 
 RUN yarn build
+RUN cp -r ./static ./dist/static
 
 ENV NODE_ENV=production
 
