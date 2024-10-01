@@ -177,4 +177,51 @@ router.post("/daily/check", async (req: Request, res: Response) => {
     }
 })
 
+router.get(
+    "/battlepass/:battlepass_id",
+    async (req: Request, res: Response) => {
+        const battlepassId = Number(req.params.battlepass_id)
+
+        try {
+            const battlePassRepository: Repository<BattlePass> =
+                AppDataSource.getRepository(BattlePass)
+
+            const battlePassLevels = await battlePassRepository.find({
+                relations: ["awards"],
+            })
+
+            if (battlePassLevels.length === 0) {
+                return res.status(404).json({ error: "BattlePass not found" })
+            }
+
+            const levels = battlePassLevels.map((battlePass) => {
+                const awards = battlePass.awards.map((award) => ({
+                    awardId: award.id,
+                    nftId: award.nftId,
+                    amount: award.amount,
+                }))
+
+                return {
+                    id: battlePass.id,
+                    title: null,
+                    status: true, // What is it
+                    isPremium: battlePass.isPremium,
+                    awards: awards,
+                    level: battlePass.stage,
+                    experience: battlePass.requiredExperience,
+                }
+            })
+
+            const data = { levels }
+
+            return res.status(200).json({ data })
+        } catch (error: any) {
+            console.error("Error in /battlepass/:battlepass_id:", error)
+            return res
+                .status(500)
+                .json({ error: "An unexpected error occurred." })
+        }
+    }
+)
+
 export default router
