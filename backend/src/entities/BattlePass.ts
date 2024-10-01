@@ -16,6 +16,9 @@ export class BattlePass {
     @Column()
     reward: string
 
+    @Column({ default: false })
+    isPremium: boolean
+
     @OneToMany(
         () => UserBattlePass,
         (userBattlePass) => userBattlePass.battlePass
