@@ -6,9 +6,10 @@ import { UserCourse } from "../entities/UserCourse"
 import { UserTask } from "../entities/UserTask"
 import { User } from "../entities/User"
 import { Task } from "../entities/Task"
+import { UserBattlePass } from "../entities/UserBattlePass"
 import AppDataSource from "../data-source"
 
-class Web3OnlyParser {
+class LearnWeb3Parser {
     private userId: number
     private dailyId: number
     // private url: string
@@ -141,7 +142,7 @@ class Web3OnlyParser {
         const userCourse = await userCourseRepository.findOne({
             where: {
                 user: { id: this.userId },
-                course: { id: this.dailyId }, // Should be 0 courseID
+                course: { id: 1 }, // Should be 1 courseID
             },
             relations: ["user", "course"],
         })
@@ -169,4 +170,4 @@ class Web3OnlyParser {
     }
 }
 
-export default Web3OnlyParser
+export default LearnWeb3Parser
