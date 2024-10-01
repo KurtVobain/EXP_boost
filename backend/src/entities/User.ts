@@ -26,6 +26,9 @@ export class User {
     @Column({ default: 0 })
     experience: number
 
+    @Column({ nullable: true })
+    walletAddress: string
+
     @OneToMany(() => UserCourse, (userCourse) => userCourse.user)
     userCourses: UserCourse[]
 

@@ -6,18 +6,15 @@ import { UserCourse } from "../entities/UserCourse"
 import { UserTask } from "../entities/UserTask"
 import { User } from "../entities/User"
 import { Task } from "../entities/Task"
-import { UserBattlePass } from "../entities/UserBattlePass"
 import AppDataSource from "../data-source"
 
 class LearnWeb3Parser {
     private userId: number
     private dailyId: number
-    // private url: string
 
     constructor(userId: number, dailyId: number) {
         this.userId = userId
         this.dailyId = dailyId
-        // this.url = `https://learnweb3.io/u/${userId}/`
     }
 
     /**
@@ -99,36 +96,51 @@ class LearnWeb3Parser {
         const oldValue = oldProfileData.data[valueToCompare] || 0
         const newValue = newProfileData.data[valueToCompare] || 0
 
-        if (newValue > oldValue) {
-            // Value has increased, update UserTask
-            const userTaskRepository: Repository<UserTask> =
-                AppDataSource.getRepository(UserTask)
-
-            // Fetch the UserTask for the user and the task
-            let userTask = await userTaskRepository.findOne({
-                where: {
-                    user: { id: this.userId },
-                    task: { id: this.dailyId },
-                },
-                relations: ["user", "task"],
-            })
-
-            if (!userTask) {
-                // Create new UserTask if it doesn't exist
-                userTask = new UserTask()
-                userTask.user = { id: this.userId } as User
-                userTask.task = { id: this.dailyId } as Task
-            }
-
-            // Update the UserTask
-            userTask.completed = true
-            userTask.completedDate = new Date()
-            await userTaskRepository.save(userTask)
-
-            return true
+        if (oldValue > newValue) {
+            return false
         }
 
-        return false
+        // Value has increased, update UserTask
+        const userTaskRepository: Repository<UserTask> =
+            AppDataSource.getRepository(UserTask)
+
+        // Fetch the UserTask for the user and the task
+        let userTask = await userTaskRepository.findOne({
+            where: {
+                user: { id: this.userId },
+                task: { id: this.dailyId },
+            },
+            relations: ["user", "task"],
+        })
+
+        if (!userTask) {
+            // Create new UserTask if it doesn't exist
+            userTask = new UserTask()
+            userTask.user = { id: this.userId } as User
+            userTask.task = { id: this.dailyId } as Task
+        }
+
+        // Update the UserTask
+        userTask.completed = true
+        userTask.completedDate = new Date()
+        await userTaskRepository.save(userTask)
+
+        const userRepository: Repository<User> =
+            AppDataSource.getRepository(User)
+
+        const user = await userRepository.findOne({
+            where: { id: this.userId },
+        })
+
+        if (!user) {
+            throw new Error("User not found.")
+        }
+
+        // Update the User experience
+        user.experience += task.experience
+        await userRepository.save(user)
+
+        return true
     }
 
     /**

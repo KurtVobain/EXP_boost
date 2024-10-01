@@ -22,11 +22,13 @@ class MintSolanaNFTService {
     private creatorWallet: Keypair
     private creator: KeypairSigner
     private nftDetail: NftDetail
+    private nftID: string
 
-    constructor(userName: string, battlepassId: number) {
+    constructor(userName: string, battlepassId: number, nftID: string) {
         if (config.walletSecret.length === 0) {
             throw new Error("Wallet secret is not defined or empty.")
         }
+        this.nftID = nftID // NFT file name
 
         const secretKey = new Uint8Array(config.walletSecret)
         this.creatorWallet =
@@ -51,7 +53,7 @@ class MintSolanaNFTService {
 
     async uploadImage(): Promise<string> {
         const imgDirectory = "./static/images"
-        const imgName = "image.png"
+        const imgName = `${this.nftID}.png`
         const filePath = `${imgDirectory}/${imgName}`
 
         if (!fs.existsSync(filePath)) {
