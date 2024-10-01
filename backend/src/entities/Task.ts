@@ -27,4 +27,7 @@ export class Task {
 
     @Column({ type: "date" })
     endDate: string // End date for when the task expires
+
+    @Column()
+    completeCondition: string
 }

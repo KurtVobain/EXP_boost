@@ -22,4 +22,7 @@ export class UserCourse {
 
     @Column()
     nickname: string // User's nickname for the specific course
+
+    @Column("jsonb", { nullable: true })
+    parsedData: any
 }

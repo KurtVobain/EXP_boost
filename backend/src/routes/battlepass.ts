@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express"
 import MintSolanaNFTService from "../services/MintNFT"
 import SendNFT from "../services/SendSolanaToken"
+import LearnWeb3Parser from "../services/checkLearnWeb3"
 
 const router = express.Router()
 
@@ -35,5 +36,27 @@ router.post(
         }
     }
 )
+
+router.post("/daily/check", async (req: Request, res: Response) => {
+    if (!req.query.userId || !req.query.dailyId) {
+        return res
+            .status(400)
+            .json({ error: "Missing userId or dailyId parameter." })
+    }
+
+    const userId = Number(req.query.userId)
+    const dailyId = Number(req.query.dailyId)
+
+    try {
+        const scraper = new LearnWeb3Parser(userId, dailyId)
+        const isTaskCompleted = await scraper.checkDailyCompletion()
+
+        return res.status(200).json({
+            isFinished: isTaskCompleted,
+        })
+    } catch (error: any) {
+        return res.status(500).json({ error: error.message })
+    }
+})
 
 export default router
