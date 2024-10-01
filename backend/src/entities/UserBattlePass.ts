@@ -15,4 +15,7 @@ export class UserBattlePass {
 
     @Column({ default: 0 })
     progress: number // Progress within the battle pass stage
+
+    @Column({ default: false })
+    levelClosed: boolean // Indicates if the user has closed this battle pass level
 }
