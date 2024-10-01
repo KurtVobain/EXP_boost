@@ -29,6 +29,12 @@ export class User {
     @Column({ nullable: true })
     walletAddress: string
 
+    @Column({ default: 0 })
+    balance: number
+
+    @Column({ default: false })
+    isPremium: boolean
+
     @OneToMany(() => UserCourse, (userCourse) => userCourse.user)
     userCourses: UserCourse[]
 
