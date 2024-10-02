@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '../componets/Box';
 import ProgressBar from '../componets/ProgressBar';
+import BattlePass from '../componets/BattlePass';
 
 interface DashboardPageProps {
 }
@@ -41,6 +42,9 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
           }/>
 
         </div>
+      </div>
+      <div className="h-[300px]">
+        <BattlePass />
       </div>
     </div>
   );

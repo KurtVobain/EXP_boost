@@ -5,6 +5,8 @@ import ProtectedRoute from './componets/ProtectedRoute';
 import CoursesPage from './pages/CoursesPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   return (
