@@ -10,9 +10,9 @@ import AppDataSource from "../data-source"
 
 class LearnWeb3Parser {
     private userId: number
-    private dailyId: number
+    private dailyId?: number
 
-    constructor(userId: number, dailyId: number) {
+    constructor(userId: number, dailyId?: number) {
         this.userId = userId
         this.dailyId = dailyId
     }
@@ -22,7 +22,7 @@ class LearnWeb3Parser {
      * @param url The URL to send the GET request to.
      * @returns The response text if successful, otherwise the error text.
      */
-    private async asyncRequest(url: string): Promise<string> {
+    public async asyncRequest(url: string): Promise<string> {
         try {
             const response: AxiosResponse<string> = await axios.get(url)
             if (response.status !== 200) {
@@ -41,7 +41,7 @@ class LearnWeb3Parser {
      * Parses the HTML response to extract user data from a <script> tag with type 'application/json'.
      * @param html The HTML response as a string.
      */
-    private async parseResponse(html: string): Promise<any> {
+    public async parseResponse(html: string): Promise<any> {
         const $ = cheerio.load(html)
         const scriptTag = $('script[type="application/json"]').first()
 
