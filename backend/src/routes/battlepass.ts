@@ -6,6 +6,7 @@ import LearnWeb3Parser from "../services/checkLearnWeb3"
 import { User } from "../entities/User"
 import { BattlePass } from "../entities/BattlePass"
 import { UserBattlePass } from "../entities/UserBattlePass"
+import { UserTask } from "../entities/UserTask"
 import AppDataSource from "../data-source"
 
 const router = express.Router()
@@ -223,5 +224,33 @@ router.get(
         }
     }
 )
+
+router.get("/dailies", async (req: Request, res: Response) => {
+    const { userId } = req.query
+
+    if (!userId) {
+        return res.status(400).json({ error: "Missing userId parameter." })
+    }
+
+    try {
+        const userTaskRepository = AppDataSource.getRepository(UserTask)
+
+        const userTasks = await userTaskRepository.find({
+            where: { user: { id: Number(userId) } },
+            relations: ["task"],
+        })
+
+        const dailies = userTasks.map((userTask) => ({
+            title: userTask.task.name,
+            isClosed: userTask.completed,
+            dailyId: userTask.task.id,
+        }))
+
+        res.status(200).json({ data: dailies })
+    } catch (error) {
+        console.error("Error in /dailies:", error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
 
 export default router
