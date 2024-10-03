@@ -4,7 +4,7 @@ import App from './App.tsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <div className="bg-[url('../public/Login.png')] bg-cover bg-center bg-no-repeat min-h-screen">
     <App />
-  </React.StrictMode>,
+  </div>
 )
