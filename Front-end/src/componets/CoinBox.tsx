@@ -1,9 +1,10 @@
 import React from 'react';
 
 interface CoinBoxProps {
+  balance: number;
 }
 
-const CoinBox: React.FC<CoinBoxProps> = ({  }) => {
+const CoinBox: React.FC<CoinBoxProps> = ({ balance }) => {
   return (
     <div className='h-15 p-4 flex flex-row gap-4 bg-[#16181C] rounded-lg' >
       <div className="">
@@ -21,7 +22,7 @@ const CoinBox: React.FC<CoinBoxProps> = ({  }) => {
         </svg>
       </div>
       <div className="flex items-center">
-        9,999.2
+        {balance}
       </div>
     </div>
   );

@@ -1,12 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '../componets/Box';
 import ProgressBar from '../componets/ProgressBar';
 import BattlePass from '../componets/BattlePass';
+import axios from 'axios';
+import { UserStore } from '../stores/UserStore';
+import { BattlePassStore } from '../stores/BattlePassStore';
 
 interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
+  const setUserState = UserStore((state) => state.setUserState);
+
+  const profileLevel = UserStore((state) => state.profileLevel);
+  const setLevels = BattlePassStore((state) => state.setLevels);
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/profile/1')
+      .then((response) => {
+        setUserState(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios.get('http://localhost:3000/api/battlepass/1', {
+      }).then((response) => {
+        console.log('---re: ', response.data.data);
+        setLevels(response.data.data.levels);
+      }).catch((error) => {
+        console.log(error);
+      });
+  }, [setUserState]);
+
   return (
     <div className='text-white' >
       <div className="">
@@ -14,7 +40,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
           <Box children = {
             <div className="flex flex-col gap-6">
               <div className="text-xl">
-                1 Level
+                {profileLevel} Level
               </div>
               <ProgressBar maxValue={100} activeValue={50} />
             </div>

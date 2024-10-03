@@ -40,28 +40,17 @@
   right: 0;
   bottom: 0;
   z-index: -1;
-  border-radius: 8px; /* Радиус для градиента */
-  padding: 1px; /* Толщина границы */
+  border-radius: 8px;
+  padding: 1px;
   background: linear-gradient(to right, #492BFF, #7940FF);
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
-  mask-composite: exclude; /* Чтобы оставить только границу */
+  mask-composite: exclude;
 }
 .bgGradient {
   background-image: var(--gradient);
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background-image: url('./images/background.jpg'); /* Относительный путь к файлу */
-  background-size: cover; /* Растягивает изображение, сохраняя пропорции */
-  background-position: center; /* Центрирует изображение */
-  background-repeat: no-repeat; /* Отключает повторение изображения */
-  height: 100vh; /* Высота 100% от высоты экрана */
-  width: 100vw; /* Ширина 100% от ширины экрана */
 }
 
 @font-face {
