@@ -32,6 +32,7 @@
   background-image: var(--surface)
 }
 
+
 .borderGradient::before {
   content: '';
   position: absolute;

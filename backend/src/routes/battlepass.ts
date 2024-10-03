@@ -227,6 +227,7 @@ router.get(
 
 router.get("/dailies", async (req: Request, res: Response) => {
     const { userId } = req.query
+    console.log('---: userId', userId);
 
     if (!userId) {
         return res.status(400).json({ error: "Missing userId parameter." })
