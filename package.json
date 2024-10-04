@@ -86,9 +86,9 @@
     "scripts": {
         "build": "tsc && yarn cpx",
         "cpx": "cpx \"src/views/**/*\" dist/views",
-        "start": "node ./backend/dist/server.js",
+        "start": "npm install && node ./backend/dist/server.js",
         "dev": "ts-node src/server.ts",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
-        "heroku-postbuild": "npm install &&cd Front-end && npm install && npm run build"
+        "heroku-postbuild": "cd backend && npm install && cd ../Front-end && npm install && npm run build"
     }
 }
