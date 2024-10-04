@@ -21,7 +21,7 @@ export const UserStore = create<UserStore>((set) => ({
   isPremium: false,
   userName: "",
   profileLevel: 0,
-  setUserState: (newState: UserStore) => set({
+  setUserState: (newState: any) => set({
     balance: newState.balance,
     curBPExp: newState.current_battlepass_experience,
     curBPLvl: newState.current_battlepass_level,

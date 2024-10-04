@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Box from '../componets/Box';
 import ProgressBar from '../componets/ProgressBar';
 import BattlePass from '../componets/BattlePass';
@@ -6,18 +6,21 @@ import axios from 'axios';
 import { UserStore } from '../stores/UserStore';
 import { BattlePassStore } from '../stores/BattlePassStore';
 import { TypeAnimation } from 'react-type-animation';
+import { DaylisDto } from '../types';
 
 interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
+  const hostname = import.meta.env.VITE_API_URL
   const setUserState = UserStore((state) => state.setUserState);
+  const [daylis, setDaylis] = useState<DaylisDto[]>([]);
 
   const profileLevel = UserStore((state) => state.profileLevel);
   const setLevels = BattlePassStore((state) => state.setLevels);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/profile/1')
+    axios.get(`${hostname}/profile/1`)
       .then((response) => {
         setUserState(response.data.data);
       })
@@ -25,19 +28,24 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
         console.log(error);
       });
 
-    axios.get('http://localhost:3000/api/battlepass/1', {
+    axios.get(`${hostname}/battlepass/1`, {
       }).then((response) => {
         setLevels(response.data.data.levels);
       }).catch((error) => {
         console.log(error);
       });
-    axios.get('http://localhost:3000/api/dailies', { params: { userId: 1 }
+    axios.get(`${hostname}/dailies`, { params: { userId: 1 }
       }).then((response) => {
-        console.log('---reasd: ', response.data.data);
+        setDaylis(response.data.data);
       }).catch((error) => {
         console.log(error);
       });
   }, [setUserState]);
+
+  const checkDaily = useCallback((dailyId: number) => {
+    axios.post(`${hostname}/daily/check?userId=${1}&dailyId=${dailyId}`, {
+    })
+  }, []);
 
   return (
     <div className='text-white' >
@@ -104,6 +112,24 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
                 <div className="flex flex-col gap-2">
                   <span className='text-xl'>Daily Progress</span>
                   <span className='text-[#AAAAAA]'>Check task if you are done!</span>
+                </div>
+                <div className="flex flex-col gap-4">
+                  {daylis.map((daily, index) => (
+                    <div className="flex flex-row gap-4 items-center">
+                      <div className="w-[190px]">
+                        <span>{daily.title}</span>
+                        <ProgressBar maxValue={1} activeValue={daily.isClosed ? 1 : 0} />
+                      </div>
+                      <div onClick={() => checkDaily(daily.dailyId)} className={`flex flex-row gap-2 cursor-pointer rounded-full px-2 ${daily.isClosed ? "bg-[#21C639]" :"bg-[#2C3039]"} items-center justify-center h-8 text-xs`}>
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke={`#FFFFFF`} xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6.05263 11.2155C8.93306 11.2155 11.2681 8.88041 11.2681 5.99999C11.2681 3.11956 8.93306 0.784515 6.05263 0.784515C3.1722 0.784515 0.837158 3.11956 0.837158 5.99999C0.837158 8.88041 3.1722 11.2155 6.05263 11.2155Z" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M4.48779 5.99999L5.53089 7.04308L7.61708 4.95689" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        {daily.isClosed ? "Done" : "Check"}
+
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             }/>
