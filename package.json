@@ -1,7 +1,7 @@
 {
     "name": "back-end",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "server.js",
     "author": "Jay",
     "license": "MIT",
     "private": true,
@@ -89,6 +89,6 @@
         "start": "node ./backend/dist/server.js",
         "dev": "ts-node src/server.ts",
         "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
-        "heroku-postbuild": "cd Front-end && npm install && npm run build"
+        "heroku-postbuild": "npm install &&cd Front-end && npm install && npm run build"
     }
 }
