@@ -22,34 +22,37 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const dotenv = __importStar(require("dotenv"));
-const ormconfig_json_1 = __importDefault(require("../ormconfig.json"));
+const config_1 = require("./config");
 dotenv.config();
 const isDocker = process.env.NODE_ENV === "production";
 const AppDataSource = new typeorm_1.DataSource(isDocker
     ? {
-        type: "postgres",
-        url: ormconfig_json_1.default.url,
-        entities: ormconfig_json_1.default.entities,
-        migrations: ormconfig_json_1.default.migrations,
-        synchronize: ormconfig_json_1.default.synchronize,
-        logging: ormconfig_json_1.default.logging,
+        type: process.env.DB_TYPE || "postgres",
+        host: config_1.config.db.host,
+        port: config_1.config.db.port || 5432,
+        username: config_1.config.db.username,
+        password: config_1.config.db.password,
+        database: config_1.config.db.name,
+        synchronize: false,
+        logging: true,
+        entities: ["dist/entities/**/*.js"],
+        migrations: ["dist/migrations/**/*.js"],
+        ssl: { rejectUnauthorized: false },
     }
     : {
         type: process.env.DB_TYPE || "postgres",
-        host: process.env.DB_HOST || "localhost",
-        port: Number(process.env.DB_PORT) || 5432,
-        username: process.env.DB_USERNAME || "expboost",
-        password: process.env.DB_PASSWORD || "mypassword",
-        database: process.env.DB_NAME || "expboost",
+        host: config_1.config.db.host,
+        port: config_1.config.db.port || 5432,
+        username: config_1.config.db.username,
+        password: config_1.config.db.password,
+        database: config_1.config.db.name,
         synchronize: false,
         logging: true,
-        entities: ["src/entities/*.ts"],
-        migrations: ["src/migrations/*.ts"],
+        entities: ["dist/entities/**/*.js"],
+        migrations: ["dist/migrations/**/*.js"],
+        ssl: { rejectUnauthorized: false },
     });
 exports.default = AppDataSource;

@@ -9,6 +9,7 @@ import { UserBattlePass } from "./entities/UserBattlePass"
 import { CourseTask } from "./entities/CourseTask"
 import * as dotenv from "dotenv"
 import ormconfig from "../ormconfig.json"
+import { config } from "./config"
 
 dotenv.config()
 
@@ -17,25 +18,31 @@ const isDocker = process.env.NODE_ENV === "production"
 const AppDataSource = new DataSource(
     isDocker
         ? {
-              type: "postgres",
-              url: ormconfig.url,
-              entities: ormconfig.entities,
-              migrations: ormconfig.migrations,
-              synchronize: ormconfig.synchronize,
-              logging: ormconfig.logging,
+              type: (process.env.DB_TYPE as any) || "postgres",
+              host: config.db.host,
+              port: config.db.port || 5432,
+              username: config.db.username,
+              password: config.db.password,
+              database: config.db.name,
+              synchronize: false,
+              logging: true,
+              entities: ["dist/entities/**/*.js"],
+              migrations: ["dist/migrations/**/*.js"],
+              ssl: { rejectUnauthorized: false },
           }
         : {
               type: (process.env.DB_TYPE as any) || "postgres",
-              host: process.env.DB_HOST || "localhost",
-              port: Number(process.env.DB_PORT) || 5432,
-              username: process.env.DB_USERNAME || "expboost",
-              password: process.env.DB_PASSWORD || "mypassword",
-              database: process.env.DB_NAME || "expboost",
+              host: config.db.host,
+              port: config.db.port || 5432,
+              username: config.db.username,
+              password: config.db.password,
+              database: config.db.name,
               synchronize: false,
               logging: true,
-              entities: ["src/entities/*.ts"],
-              migrations: ["src/migrations/*.ts"],
-          }
+              entities: ["dist/entities/**/*.js"],
+              migrations: ["dist/migrations/**/*.js"],
+              ssl: { rejectUnauthorized: false },
+          },
 )
 
 export default AppDataSource
