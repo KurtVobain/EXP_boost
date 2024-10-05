@@ -26,7 +26,7 @@ const AppDataSource = new DataSource(
               database: process.env.DB_NAME,
               synchronize: false,
               logging: true,
-              entities: ["dist/entities/**/*.js"],
+              entities: [__dirname + "/../dist/entities/*.js"],
               migrations: ["dist/migrations/**/*.js"],
               ssl: { rejectUnauthorized: false },
           }
@@ -39,7 +39,7 @@ const AppDataSource = new DataSource(
               database: config.db.name,
               synchronize: false,
               logging: true,
-              entities: ["dist/entities/**/*.js"],
+              entities: [__dirname + "/../dist/entities/*.js"],
               migrations: ["dist/migrations/**/*.js"],
               ssl: { rejectUnauthorized: false },
           },
