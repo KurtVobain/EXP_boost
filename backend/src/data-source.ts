@@ -18,12 +18,12 @@ const isDocker = process.env.NODE_ENV === "production"
 const AppDataSource = new DataSource(
     isDocker
         ? {
-              type: (process.env.DB_TYPE as any) || "postgres",
-              host: config.db.host,
-              port: config.db.port || 5432,
-              username: config.db.username,
-              password: config.db.password,
-              database: config.db.name,
+              type: process.env.DB_TYPE as any,
+              host: process.env.DB_HOST,
+              port: Number(process.env.DB_PORT),
+              username: process.env.DB_USERNAME,
+              password: process.env.DB_PASSWORD,
+              database: process.env.DB_NAME,
               synchronize: false,
               logging: true,
               entities: ["dist/entities/**/*.js"],
