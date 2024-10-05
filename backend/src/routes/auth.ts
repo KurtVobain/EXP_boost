@@ -8,6 +8,7 @@ import { User } from "../entities/User"
 import { Course } from "../entities/Course"
 import { UserCourse } from "../entities/UserCourse"
 import LearnWeb3Parser from "../services/checkLearnWeb3"
+import * as solanaWeb3 from "@solana/web3.js"
 
 const router = Router()
 
@@ -26,6 +27,10 @@ router.post(
         body("learnWeb3url")
             .notEmpty()
             .withMessage("LearnWeb3 profile url is required"),
+        body("mock")
+            .optional()
+            .isBoolean()
+            .withMessage("mock must be a boolean"),
     ],
     async (req: Request, res: Response) => {
         const userRepository = AppDataSource.getRepository(User)
@@ -37,7 +42,7 @@ router.post(
             return res.status(400).json({ errors: errors.array() })
         }
 
-        const {
+        let {
             firstName,
             lastName,
             email,
@@ -45,6 +50,20 @@ router.post(
             walletAddress,
             learnWeb3url,
         } = req.body
+
+        const mock = req.body.mock
+        if (mock) {
+            firstName = "Mock"
+            lastName = "User"
+
+            const randomNums = Math.floor(100 + Math.random() * 900)
+            email = `mock${randomNums}@example.com`
+            password = "mockpassword"
+
+            const keyPair = solanaWeb3.Keypair.generate()
+            walletAddress = keyPair.publicKey.toString()
+            learnWeb3url = "https://learnweb3.io/u/MockUser/"
+        }
 
         try {
             const existingUser = await userRepository.findOne({
@@ -93,9 +112,12 @@ router.post(
                     .json({ error: "Invalid LearnWeb3 URL format" })
             }
 
-            const parser = new LearnWeb3Parser(user.id)
-            const html = await parser.asyncRequest(learnWeb3url)
-            const parsedData = await parser.parseResponse(html)
+            let parsedData = { data: { numBadges: 0, xp: 0 } }
+            if (!mock) {
+                const parser = new LearnWeb3Parser(user.id)
+                const html = await parser.asyncRequest(learnWeb3url)
+                parsedData = await parser.parseResponse(html)
+            }
 
             const userCourse = userCourseRepository.create({
                 user: user,
@@ -119,7 +141,7 @@ router.post(
             console.error("Error in /auth/register:", error)
             res.status(500).json({ error: "Internal server error" })
         }
-    }
+    },
 )
 
 router.post(
@@ -153,7 +175,7 @@ router.post(
             const token = jwt.sign(
                 { userId: user.id },
                 config.jwtToken as string,
-                { expiresIn: "1h" }
+                { expiresIn: "1h" },
             )
 
             const { password: _, ...userData } = user
@@ -167,7 +189,7 @@ router.post(
             console.error("Error in /auth/login:", error)
             res.status(500).json({ error: "Internal server error" })
         }
-    }
+    },
 )
 
 export default router
