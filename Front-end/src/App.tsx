@@ -21,7 +21,7 @@ function Layout() {
   return (
     <>
       {location.pathname !== '/'  && <Header/>}
-      <div className='max-w-7xl my-0 mx-auto pb-10'>
+      <div className='max-w-7xl my-0 mx-auto'>
         <Routes>
           <Route path='/' element={<LoginPage  />} />
           <Route path='/dashboard' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
