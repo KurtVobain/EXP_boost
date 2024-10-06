@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -33,6 +56,7 @@ const User_1 = require("../entities/User");
 const Course_1 = require("../entities/Course");
 const UserCourse_1 = require("../entities/UserCourse");
 const checkLearnWeb3_1 = __importDefault(require("../services/checkLearnWeb3"));
+const solanaWeb3 = __importStar(require("@solana/web3.js"));
 const router = (0, express_1.Router)();
 router.post("/auth/register", [
     (0, express_validator_1.body)("firstName").notEmpty().withMessage("First name is required"),
@@ -47,6 +71,10 @@ router.post("/auth/register", [
     (0, express_validator_1.body)("learnWeb3url")
         .notEmpty()
         .withMessage("LearnWeb3 profile url is required"),
+    (0, express_validator_1.body)("mock")
+        .optional()
+        .isBoolean()
+        .withMessage("mock must be a boolean"),
 ], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userRepository = data_source_1.default.getRepository(User_1.User);
     const courseRepository = data_source_1.default.getRepository(Course_1.Course);
@@ -55,7 +83,18 @@ router.post("/auth/register", [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { firstName, lastName, email, password, walletAddress, learnWeb3url, } = req.body;
+    let { firstName, lastName, email, password, walletAddress, learnWeb3url, } = req.body;
+    const mock = req.body.mock;
+    if (mock) {
+        firstName = "Mock";
+        lastName = "User";
+        const randomNums = Math.floor(100 + Math.random() * 900);
+        email = `mock${randomNums}@example.com`;
+        password = "mockpassword";
+        const keyPair = solanaWeb3.Keypair.generate();
+        walletAddress = keyPair.publicKey.toString();
+        learnWeb3url = "https://learnweb3.io/u/MockUser/";
+    }
     try {
         const existingUser = yield userRepository.findOne({
             where: { email },
@@ -97,9 +136,12 @@ router.post("/auth/register", [
                 .status(400)
                 .json({ error: "Invalid LearnWeb3 URL format" });
         }
-        const parser = new checkLearnWeb3_1.default(user.id);
-        const html = yield parser.asyncRequest(learnWeb3url);
-        const parsedData = yield parser.parseResponse(html);
+        let parsedData = { data: { numBadges: 0, xp: 0 } };
+        if (!mock) {
+            const parser = new checkLearnWeb3_1.default(user.id);
+            const html = yield parser.asyncRequest(learnWeb3url);
+            parsedData = yield parser.parseResponse(html);
+        }
         const userCourse = userCourseRepository.create({
             user: user,
             course: course,
