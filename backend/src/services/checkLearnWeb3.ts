@@ -47,7 +47,7 @@ class LearnWeb3Parser {
 
         if (!scriptTag || scriptTag.length === 0) {
             throw new Error(
-                'No <script> tag with type "application/json" found.'
+                'No <script> tag with type "application/json" found.',
             )
         }
 
@@ -71,7 +71,7 @@ class LearnWeb3Parser {
 
     private async checkUpdates(
         oldProfileData: any,
-        newProfileData: any
+        newProfileData: any,
     ): Promise<boolean> {
         if (!oldProfileData || !newProfileData) {
             throw new Error("Insufficient data to perform update check.")
@@ -172,7 +172,7 @@ class LearnWeb3Parser {
 
         const isTaskCompleted = this.checkUpdates(
             oldProfileData,
-            newProfileData
+            newProfileData,
         )
 
         userCourse.parsedData = newProfileData
