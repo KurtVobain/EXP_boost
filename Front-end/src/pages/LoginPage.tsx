@@ -60,8 +60,12 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
     <div className="">
       
       <div className="h-screen flex flex-col gap-8 items-center justify-center">
-        <div className="bg-purple text-white p-2 rounded-md w-72 text-center">
-          Login as Guest
+        <div className="flex flex-col gap-2 w-full items-center">
+          To test the functionality, sign in as a guest
+          <div className="bg-[#FF7423] text-white p-2 rounded-md w-72 text-center cursor-pointer">
+            Sign in as a guest
+
+          </div>
         </div>
         <Box
           children={
