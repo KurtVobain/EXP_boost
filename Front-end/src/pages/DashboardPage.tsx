@@ -8,6 +8,7 @@ import { BattlePassStore } from '../stores/BattlePassStore';
 import { TypeAnimation } from 'react-type-animation';
 import { DaylisDto } from '../types';
 import { useLocation } from 'react-router-dom';
+import { userIdStore } from '../stores/userIdStore';
 
 interface DashboardPageProps {
 }
@@ -18,13 +19,31 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
   const hostname = import.meta.env.VITE_API_URL
   const setUserState = UserStore((state) => state.setUserState);
   const [daylis, setDaylis] = useState<DaylisDto[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const profileLevel = UserStore((state) => state.profileLevel);
   const setLevels = BattlePassStore((state) => state.setLevels);
+  const curBPExp = UserStore((state) => state.curBPExp);
+
+  const userId = userIdStore((state) => state.userId);
+
+  useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    axios.get(`${hostname}/profile/${userId}`)
+      .then((response) => {
+        setUserState(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }, [isLoading, userId]);
+
     
 
   useEffect(() => {
-    axios.get(`${hostname}/profile/${user_id}`)
+    axios.get(`${hostname}/profile/${userId}`)
       .then((response) => {
         setUserState(response.data.data);
       })
@@ -32,23 +51,26 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
         console.log(error);
       });
 
-    axios.get(`${hostname}/battlepass/${user_id}`, {
+    axios.get(`${hostname}/battlepass/${userId}`, {
       }).then((response) => {
         setLevels(response.data.data.levels);
       }).catch((error) => {
         console.log(error);
       });
-    axios.get(`${hostname}/dailies`, { params: { userId: user_id }
+    axios.get(`${hostname}/dailies`, { params: { userId: userId }
       }).then((response) => {
         setDaylis(response.data.data);
       }).catch((error) => {
         console.log(error);
       });
-  }, [setUserState, user_id]);
+  }, [setUserState, userId]);
 
   const checkDaily = useCallback((dailyId: number) => {
-    axios.post(`${hostname}/daily/check?userId=${user_id}&dailyId=${dailyId}`, {
-    })
+    setIsLoading(true);
+    axios.post(`${hostname}/daily/check?userId=${userId}&dailyId=${dailyId}`, {
+    }).finally(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   return (
@@ -60,7 +82,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
               <div className="text-xl">
                 {profileLevel} Level
               </div>
-              <ProgressBar maxValue={100} activeValue={50} />
+              <ProgressBar maxValue={100} activeValue={curBPExp} />
             </div>
           }/>
           <Box children = {
@@ -124,12 +146,12 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
                         <span>{daily.title}</span>
                         <ProgressBar maxValue={1} activeValue={daily.isClosed ? 1 : 0} />
                       </div>
-                      <div onClick={() => checkDaily(daily.dailyId)} className={`flex flex-row gap-2 cursor-pointer rounded-full px-2 ${daily.isClosed ? "bg-[#21C639]" :"bg-[#2C3039]"} items-center justify-center h-8 text-xs`}>
+                      <div onClick={() => daily.isClosed ? {} : checkDaily(daily.dailyId)} className={`flex flex-row gap-2 cursor-pointer rounded-full px-2 ${daily.isClosed ? "bg-[#21C639]" :"bg-[#2C3039]"} items-center justify-center h-8 text-xs`}>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke={`#FFFFFF`} xmlns="http://www.w3.org/2000/svg">
                           <path d="M6.05263 11.2155C8.93306 11.2155 11.2681 8.88041 11.2681 5.99999C11.2681 3.11956 8.93306 0.784515 6.05263 0.784515C3.1722 0.784515 0.837158 3.11956 0.837158 5.99999C0.837158 8.88041 3.1722 11.2155 6.05263 11.2155Z" stroke-linecap="round" stroke-linejoin="round"/>
                           <path d="M4.48779 5.99999L5.53089 7.04308L7.61708 4.95689" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        {daily.isClosed ? "Done" : "Check"}
+                        {isLoading ? "Processing" : daily.isClosed ? "Done" : "Check"}
 
                       </div>
                     </div>

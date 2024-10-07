@@ -4,6 +4,7 @@ import Logo from '../componets/Logo';
 import axios from 'axios';
 import MultiToggle from '../componets/MultiTiggle';
 import { useNavigate } from 'react-router-dom';
+import { userIdStore } from '../stores/userIdStore';
 
 interface LoginPageProps {}
 
@@ -22,6 +23,8 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
 
   const navigate = useNavigate();
 
+  const setUserId = userIdStore((state) => state.setUserId);
+
   const handleRegister = useCallback(() => {
     const data = {
       email,
@@ -35,6 +38,7 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
       .post(`${hostname}/auth/register`, data)
       .then((response) => {
         const id = response.data.user.id;
+        setUserId(id);
         navigate("/dashboard", { state: { user_id: id } });
       })
       .catch((error) => {
@@ -51,6 +55,7 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
       .post(`${hostname}/auth/login`, data)
       .then((response) => {
         const id = response.data.user.id;
+        setUserId(id);
         navigate("/dashboard", { state: { user_id: id } });
       })
       .catch((error) => {
@@ -72,6 +77,7 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
       .post(`${hostname}/auth/register`, data)
       .then((response) => {
         const id = response.data.user.id;
+        setUserId(id);
         navigate("/dashboard", { state: { user_id: id } });
       })
       .catch((error) => {
