@@ -7,6 +7,8 @@ import AppDataSource from "../data-source"
 import { User } from "../entities/User"
 import { Course } from "../entities/Course"
 import { UserCourse } from "../entities/UserCourse"
+import { Task } from "../entities/Task"
+import { UserTask } from "../entities/UserTask"
 import LearnWeb3Parser from "../services/checkLearnWeb3"
 import * as solanaWeb3 from "@solana/web3.js"
 
@@ -126,6 +128,19 @@ router.post(
                 parsedData: parsedData,
             })
             await userCourseRepository.save(userCourse)
+
+            const TaskRepository = AppDataSource.getRepository(Task)
+            const tasks = await TaskRepository.find()
+            const userTaskRepository = AppDataSource.getRepository(UserTask)
+
+            for (const task of tasks) {
+                const userTask = userTaskRepository.create({
+                    user: user,
+                    task: task,
+                    completed: false,
+                })
+                await userTaskRepository.save(userTask)
+            }
 
             const token = jwt.sign({ userId: user.id }, config.jwtToken, {
                 expiresIn: "1h",

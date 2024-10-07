@@ -55,6 +55,8 @@ const data_source_1 = __importDefault(require("../data-source"));
 const User_1 = require("../entities/User");
 const Course_1 = require("../entities/Course");
 const UserCourse_1 = require("../entities/UserCourse");
+const Task_1 = require("../entities/Task");
+const UserTask_1 = require("../entities/UserTask");
 const checkLearnWeb3_1 = __importDefault(require("../services/checkLearnWeb3"));
 const solanaWeb3 = __importStar(require("@solana/web3.js"));
 const router = (0, express_1.Router)();
@@ -149,6 +151,17 @@ router.post("/auth/register", [
             parsedData: parsedData,
         });
         yield userCourseRepository.save(userCourse);
+        const TaskRepository = data_source_1.default.getRepository(Task_1.Task);
+        const tasks = yield TaskRepository.find();
+        const userTaskRepository = data_source_1.default.getRepository(UserTask_1.UserTask);
+        for (const task of tasks) {
+            const userTask = userTaskRepository.create({
+                user: user,
+                task: task,
+                completed: false,
+            });
+            yield userTaskRepository.save(userTask);
+        }
         const token = jsonwebtoken_1.default.sign({ userId: user.id }, config_1.config.jwtToken, {
             expiresIn: "1h",
         });
