@@ -34,8 +34,8 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
     axios
       .post(`${hostname}/auth/register`, data)
       .then((response) => {
-        const user_id = response.data.data.user.userId;
-        navigate("/dashboard", { state: { user_id } });
+        const id = response.data.user.id;
+        navigate("/dashboard", { state: { user_id: id } });
       })
       .catch((error) => {
         console.log(error);
@@ -50,8 +50,8 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
     axios
       .post(`${hostname}/auth/login`, data)
       .then((response) => {
-        const user_id = response.data.data.user.userId;
-        navigate("/dashboard", { state: { user_id } });
+        const id = response.data.user.id;
+        navigate("/dashboard", { state: { user_id: id } });
       })
       .catch((error) => {
         console.log(error);
@@ -61,7 +61,7 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
   const handleClickGuest = useCallback(() => {
     const data = {
       email: '',
-      password : '123123',
+      password : '',
       firstName: '',
       lastName: '',
       walletAddress: '',
@@ -71,8 +71,8 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
     axios
       .post(`${hostname}/auth/register`, data)
       .then((response) => {
-        const user_id = response.data.data.user.userId;
-        navigate("/dashboard", { state: { user_id } });
+        const id = response.data.user.id;
+        navigate("/dashboard", { state: { user_id: id } });
       })
       .catch((error) => {
         console.log(error);
