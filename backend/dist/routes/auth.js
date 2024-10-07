@@ -81,12 +81,14 @@ router.post("/auth/register", [
     const userRepository = data_source_1.default.getRepository(User_1.User);
     const courseRepository = data_source_1.default.getRepository(Course_1.Course);
     const userCourseRepository = data_source_1.default.getRepository(UserCourse_1.UserCourse);
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+    const mock = req.body.mock;
+    if (!mock) {
+        const errors = (0, express_validator_1.validationResult)(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
     }
     let { firstName, lastName, email, password, walletAddress, learnWeb3url, } = req.body;
-    const mock = req.body.mock;
     if (mock) {
         firstName = "Mock";
         lastName = "User";

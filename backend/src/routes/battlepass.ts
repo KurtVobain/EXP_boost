@@ -17,12 +17,15 @@ interface MintAndSendNFTRequest {
     destinationAddress: string
 }
 
-async function getUserClosedLevels(user: User): Promise<number[]> {
+async function getUserClosedLevels(userId: number): Promise<number[]> {
     const battlePassRepository: Repository<BattlePass> =
         AppDataSource.getRepository(BattlePass)
     const userBattlePassRepository: Repository<UserBattlePass> =
         AppDataSource.getRepository(UserBattlePass)
+    const userRepository: Repository<User> = AppDataSource.getRepository(User)
 
+    const user = await userRepository.findOne({ where: { id: userId } })
+    if (!user) throw new Error("User not found")
     let totalExperience = user.experience
     if (user.email.includes("mock")) {
         totalExperience = 100
@@ -57,16 +60,18 @@ async function getUserClosedLevels(user: User): Promise<number[]> {
                 userBattlePass.levelClosed = true
                 await userBattlePassRepository.save(userBattlePass)
                 newlyClosedLevelIds.push(level.id)
+                console.log("Updated level:", level.id)
             } else {
-                // Level already closed previously
+                console.log("Level already closed:", level.id)
                 continue
             }
         } else {
-            // No more levels can be closed with the current experience
+            console.log("Level not yet reached:", level.id)
             break
         }
     }
 
+    console.log("Newly closed levels:", newlyClosedLevelIds)
     return newlyClosedLevelIds
 }
 
@@ -129,7 +134,7 @@ router.post("/daily/check", async (req: Request, res: Response) => {
             })
         }
 
-        const closedLevelIds = await getUserClosedLevels(user)
+        const closedLevelIds = await getUserClosedLevels(userId)
 
         const userName = user.firstName
         const destinationAddress = user.walletAddress

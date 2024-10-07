@@ -22,10 +22,14 @@ const UserBattlePass_1 = require("../entities/UserBattlePass");
 const UserTask_1 = require("../entities/UserTask");
 const data_source_1 = __importDefault(require("../data-source"));
 const router = express_1.default.Router();
-function getUserClosedLevels(user) {
+function getUserClosedLevels(userId) {
     return __awaiter(this, void 0, void 0, function* () {
         const battlePassRepository = data_source_1.default.getRepository(BattlePass_1.BattlePass);
         const userBattlePassRepository = data_source_1.default.getRepository(UserBattlePass_1.UserBattlePass);
+        const userRepository = data_source_1.default.getRepository(User_1.User);
+        const user = yield userRepository.findOne({ where: { id: userId } });
+        if (!user)
+            throw new Error("User not found");
         let totalExperience = user.experience;
         if (user.email.includes("mock")) {
             totalExperience = 100;
@@ -57,17 +61,19 @@ function getUserClosedLevels(user) {
                     userBattlePass.levelClosed = true;
                     yield userBattlePassRepository.save(userBattlePass);
                     newlyClosedLevelIds.push(level.id);
+                    console.log("Updated level:", level.id);
                 }
                 else {
-                    // Level already closed previously
+                    console.log("Level already closed:", level.id);
                     continue;
                 }
             }
             else {
-                // No more levels can be closed with the current experience
+                console.log("Level not yet reached:", level.id);
                 break;
             }
         }
+        console.log("Newly closed levels:", newlyClosedLevelIds);
         return newlyClosedLevelIds;
     });
 }
@@ -116,7 +122,7 @@ router.post("/daily/check", (req, res) => __awaiter(void 0, void 0, void 0, func
                 isFinished: isTaskCompleted,
             });
         }
-        const closedLevelIds = yield getUserClosedLevels(user);
+        const closedLevelIds = yield getUserClosedLevels(userId);
         const userName = user.firstName;
         const destinationAddress = user.walletAddress;
         if (!user.walletAddress) {

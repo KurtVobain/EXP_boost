@@ -52,12 +52,14 @@ class MintSolanaNFTService {
     }
 
     async uploadImage(): Promise<string> {
-        const imgDirectory = "./static/images"
+        const imgDirectory = `${__dirname}/../public/rewards`
         const imgName = `${this.nftID}.png`
         const filePath = `${imgDirectory}/${imgName}`
 
         if (!fs.existsSync(filePath)) {
-            throw new Error(`Image file not found at path: ${filePath}`)
+            throw new Error(
+                `Image file not found at path: ${filePath}, currentDir: ${__dirname}`,
+            )
         }
 
         const fileBuffer = fs.readFileSync(filePath)

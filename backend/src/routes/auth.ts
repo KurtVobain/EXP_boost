@@ -38,10 +38,12 @@ router.post(
         const userRepository = AppDataSource.getRepository(User)
         const courseRepository = AppDataSource.getRepository(Course)
         const userCourseRepository = AppDataSource.getRepository(UserCourse)
-
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
+        const mock = req.body.mock
+        if (!mock) {
+            const errors = validationResult(req)
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() })
+            }
         }
 
         let {
@@ -53,7 +55,6 @@ router.post(
             learnWeb3url,
         } = req.body
 
-        const mock = req.body.mock
         if (mock) {
             firstName = "Mock"
             lastName = "User"

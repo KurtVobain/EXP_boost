@@ -65,11 +65,11 @@ class MintSolanaNFTService {
     }
     uploadImage() {
         return __awaiter(this, void 0, void 0, function* () {
-            const imgDirectory = "./static/images";
+            const imgDirectory = `${__dirname}/../public/rewards`;
             const imgName = `${this.nftID}.png`;
             const filePath = `${imgDirectory}/${imgName}`;
             if (!fs.existsSync(filePath)) {
-                throw new Error(`Image file not found at path: ${filePath}`);
+                throw new Error(`Image file not found at path: ${filePath}, currentDir: ${__dirname}`);
             }
             const fileBuffer = fs.readFileSync(filePath);
             const image = (0, umi_1.createGenericFile)(fileBuffer, imgName, {
