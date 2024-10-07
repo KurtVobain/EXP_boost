@@ -77,7 +77,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
     axios.post(`${hostname}/daily/check?userId=${userId}&dailyId=${dailyId}`, {
     }).then((response) => {
 
-      alert("Your transactionURL:    "  + response.data.transactionURL);
+      alert(`Your transaction URL:  ${response.data.transactionURL}`);
     })
     .finally(() => {
       setIsLoading(false);
