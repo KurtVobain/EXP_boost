@@ -7,20 +7,24 @@ import { UserStore } from '../stores/UserStore';
 import { BattlePassStore } from '../stores/BattlePassStore';
 import { TypeAnimation } from 'react-type-animation';
 import { DaylisDto } from '../types';
+import { useLocation } from 'react-router-dom';
 
 interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
+  const location = useLocation();
+  const { user_id } = location.state || {}
   const hostname = import.meta.env.VITE_API_URL
   const setUserState = UserStore((state) => state.setUserState);
   const [daylis, setDaylis] = useState<DaylisDto[]>([]);
 
   const profileLevel = UserStore((state) => state.profileLevel);
   const setLevels = BattlePassStore((state) => state.setLevels);
+    
 
   useEffect(() => {
-    axios.get(`${hostname}/profile/1`)
+    axios.get(`${hostname}/profile/${user_id}`)
       .then((response) => {
         setUserState(response.data.data);
       })
@@ -28,22 +32,22 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
         console.log(error);
       });
 
-    axios.get(`${hostname}/battlepass/1`, {
+    axios.get(`${hostname}/battlepass/${user_id}`, {
       }).then((response) => {
         setLevels(response.data.data.levels);
       }).catch((error) => {
         console.log(error);
       });
-    axios.get(`${hostname}/dailies`, { params: { userId: 1 }
+    axios.get(`${hostname}/dailies`, { params: { userId: user_id }
       }).then((response) => {
         setDaylis(response.data.data);
       }).catch((error) => {
         console.log(error);
       });
-  }, [setUserState]);
+  }, [setUserState, user_id]);
 
   const checkDaily = useCallback((dailyId: number) => {
-    axios.post(`${hostname}/daily/check?userId=${1}&dailyId=${dailyId}`, {
+    axios.post(`${hostname}/daily/check?userId=${user_id}&dailyId=${dailyId}`, {
     })
   }, []);
 

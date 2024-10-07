@@ -34,7 +34,8 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
     axios
       .post(`${hostname}/auth/register`, data)
       .then((response) => {
-        navigate("/dashboard");
+        const user_id = response.data.data.user.userId;
+        navigate("/dashboard", { state: { user_id } });
       })
       .catch((error) => {
         console.log(error);
@@ -49,12 +50,34 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
     axios
       .post(`${hostname}/auth/login`, data)
       .then((response) => {
-        navigate("/dashboard");
+        const user_id = response.data.data.user.userId;
+        navigate("/dashboard", { state: { user_id } });
       })
       .catch((error) => {
         console.log(error);
       });
   }, [loginEmail, loginPassword]);
+
+  const handleClickGuest = useCallback(() => {
+    const data = {
+      email: '',
+      password : '123123',
+      firstName: '',
+      lastName: '',
+      walletAddress: '',
+      learnWeb3url: "",
+      mock: true
+    };
+    axios
+      .post(`${hostname}/auth/register`, data)
+      .then((response) => {
+        const user_id = response.data.data.user.userId;
+        navigate("/dashboard", { state: { user_id } });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div className="">
@@ -62,7 +85,7 @@ const LoginPage: React.FC<LoginPageProps> = ({}) => {
       <div className="h-screen flex flex-col gap-8 items-center justify-center">
         <div className="flex flex-col gap-2 w-full items-center">
           To test the functionality, sign in as a guest
-          <div className="bg-[#FF7423] text-white p-2 rounded-md w-72 text-center cursor-pointer">
+          <div onClick={handleClickGuest} className="bg-[#FF7423] text-white p-2 rounded-md w-72 text-center cursor-pointer">
             Sign in as a guest
 
           </div>
