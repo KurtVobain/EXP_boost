@@ -38,6 +38,13 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
       .catch((error) => {
         console.log(error);
       });
+
+      axios.get(`${hostname}/dailies`, { params: { userId: userId }
+      }).then((response) => {
+        setDaylis(response.data.data);
+      }).catch((error) => {
+        console.log(error);
+      });
     }, [isLoading, userId]);
 
     
@@ -68,7 +75,11 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
   const checkDaily = useCallback((dailyId: number) => {
     setIsLoading(true);
     axios.post(`${hostname}/daily/check?userId=${userId}&dailyId=${dailyId}`, {
-    }).finally(() => {
+    }).then((response) => {
+
+      alert("Your transactionURL:    "  + response.data.transactionURL);
+    })
+    .finally(() => {
       setIsLoading(false);
     });
   }, []);
@@ -151,7 +162,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({  }) => {
                           <path d="M6.05263 11.2155C8.93306 11.2155 11.2681 8.88041 11.2681 5.99999C11.2681 3.11956 8.93306 0.784515 6.05263 0.784515C3.1722 0.784515 0.837158 3.11956 0.837158 5.99999C0.837158 8.88041 3.1722 11.2155 6.05263 11.2155Z" stroke-linecap="round" stroke-linejoin="round"/>
                           <path d="M4.48779 5.99999L5.53089 7.04308L7.61708 4.95689" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        {isLoading ? "Processing" : daily.isClosed ? "Done" : "Check"}
+                        { daily.isClosed ? "Done" : isLoading ? "Processing" : "Check"  }
 
                       </div>
                     </div>
