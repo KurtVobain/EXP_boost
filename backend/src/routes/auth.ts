@@ -10,7 +10,6 @@ import { UserCourse } from "../entities/UserCourse"
 import { Task } from "../entities/Task"
 import { UserTask } from "../entities/UserTask"
 import LearnWeb3Parser from "../services/checkLearnWeb3"
-import * as solanaWeb3 from "@solana/web3.js"
 
 const router = Router()
 
@@ -63,8 +62,7 @@ router.post(
             email = `mock${randomNums}@example.com`
             password = "mockpassword"
 
-            const keyPair = solanaWeb3.Keypair.generate()
-            walletAddress = keyPair.publicKey.toString()
+            walletAddress = "wecpeUN4kDHBMDXrwhZ3KEx5sJY1TdqeoG96M6eMVB3"
             learnWeb3url = "https://learnweb3.io/u/MockUser/"
         }
 

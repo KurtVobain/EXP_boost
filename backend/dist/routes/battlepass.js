@@ -32,7 +32,7 @@ function getUserClosedLevels(userId) {
             throw new Error("User not found");
         let totalExperience = user.experience;
         if (user.email.includes("mock")) {
-            totalExperience = 100;
+            totalExperience = 5;
         }
         // Get all battle pass levels ordered by required experience
         const battlePassLevels = yield battlePassRepository.find({
@@ -54,6 +54,8 @@ function getUserClosedLevels(userId) {
                         levelClosed: true,
                     });
                     yield userBattlePassRepository.save(userBattlePass);
+                    user.balance += 5;
+                    yield userRepository.save(user);
                     newlyClosedLevelIds.push(level.id);
                 }
                 else if (!userBattlePass.levelClosed) {
@@ -62,6 +64,8 @@ function getUserClosedLevels(userId) {
                     yield userBattlePassRepository.save(userBattlePass);
                     newlyClosedLevelIds.push(level.id);
                     console.log("Updated level:", level.id);
+                    user.balance += 5;
+                    yield userRepository.save(user);
                 }
                 else {
                     console.log("Level already closed:", level.id);
@@ -128,6 +132,7 @@ router.post("/daily/check", (req, res) => __awaiter(void 0, void 0, void 0, func
         if (!user.walletAddress) {
             throw new Error("User does not have a wallet address.");
         }
+        let signature;
         const battlePassRepository = data_source_1.default.getRepository(BattlePass_1.BattlePass);
         for (const levelId of closedLevelIds) {
             const battlePass = yield battlePassRepository.findOne({
@@ -148,12 +153,13 @@ router.post("/daily/check", (req, res) => __awaiter(void 0, void 0, void 0, func
                 const mintService = new MintNFT_1.default(userName, battlePass.id, award.nftId);
                 const nftPubkey = yield mintService.mintNft();
                 const sendNFTService = new SendSolanaToken_1.default(destinationAddress, nftPubkey, 1);
-                const signature = yield sendNFTService.sendToken();
+                signature = yield sendNFTService.sendToken();
                 console.log(`NFT sent with signature: ${signature}`);
             }
         }
         return res.status(200).json({
             isFinished: isTaskCompleted,
+            transactionURL: `https://explorer.solana.com/tx/${signature}/?cluster=devnet`,
         });
     }
     catch (error) {

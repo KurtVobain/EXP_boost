@@ -1,27 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -58,7 +35,6 @@ const UserCourse_1 = require("../entities/UserCourse");
 const Task_1 = require("../entities/Task");
 const UserTask_1 = require("../entities/UserTask");
 const checkLearnWeb3_1 = __importDefault(require("../services/checkLearnWeb3"));
-const solanaWeb3 = __importStar(require("@solana/web3.js"));
 const router = (0, express_1.Router)();
 router.post("/auth/register", [
     (0, express_validator_1.body)("firstName").notEmpty().withMessage("First name is required"),
@@ -95,8 +71,7 @@ router.post("/auth/register", [
         const randomNums = Math.floor(100 + Math.random() * 900);
         email = `mock${randomNums}@example.com`;
         password = "mockpassword";
-        const keyPair = solanaWeb3.Keypair.generate();
-        walletAddress = keyPair.publicKey.toString();
+        walletAddress = "wecpeUN4kDHBMDXrwhZ3KEx5sJY1TdqeoG96M6eMVB3";
         learnWeb3url = "https://learnweb3.io/u/MockUser/";
     }
     try {

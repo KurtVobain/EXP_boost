@@ -28,7 +28,7 @@ async function getUserClosedLevels(userId: number): Promise<number[]> {
     if (!user) throw new Error("User not found")
     let totalExperience = user.experience
     if (user.email.includes("mock")) {
-        totalExperience = 100
+        totalExperience = 5
     }
 
     // Get all battle pass levels ordered by required experience
@@ -54,6 +54,8 @@ async function getUserClosedLevels(userId: number): Promise<number[]> {
                     levelClosed: true,
                 })
                 await userBattlePassRepository.save(userBattlePass)
+                user.balance += 5
+                await userRepository.save(user)
                 newlyClosedLevelIds.push(level.id)
             } else if (!userBattlePass.levelClosed) {
                 // Update the existing record
@@ -61,6 +63,8 @@ async function getUserClosedLevels(userId: number): Promise<number[]> {
                 await userBattlePassRepository.save(userBattlePass)
                 newlyClosedLevelIds.push(level.id)
                 console.log("Updated level:", level.id)
+                user.balance += 5
+                await userRepository.save(user)
             } else {
                 console.log("Level already closed:", level.id)
                 continue
@@ -142,6 +146,7 @@ router.post("/daily/check", async (req: Request, res: Response) => {
             throw new Error("User does not have a wallet address.")
         }
 
+        let signature
         const battlePassRepository = AppDataSource.getRepository(BattlePass)
         for (const levelId of closedLevelIds) {
             const battlePass = await battlePassRepository.findOne({
@@ -176,7 +181,7 @@ router.post("/daily/check", async (req: Request, res: Response) => {
                     1,
                 )
 
-                const signature = await sendNFTService.sendToken()
+                signature = await sendNFTService.sendToken()
 
                 console.log(`NFT sent with signature: ${signature}`)
             }
@@ -184,6 +189,7 @@ router.post("/daily/check", async (req: Request, res: Response) => {
 
         return res.status(200).json({
             isFinished: isTaskCompleted,
+            transactionURL: `https://explorer.solana.com/tx/${signature}/?cluster=devnet`,
         })
     } catch (error: any) {
         return res.status(500).json({ error: error.message })
