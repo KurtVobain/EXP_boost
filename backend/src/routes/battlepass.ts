@@ -2,6 +2,8 @@ import { Repository } from "typeorm"
 import express, { Request, Response } from "express"
 import MintSolanaNFTService from "../services/MintNFT"
 import SendNFT from "../services/SendSolanaToken"
+import MintArbitrumNFTService from "../services/mintArbitrumNFT"
+import SendNFTArbitrumService from "../services/sendArbitrumToken"
 import LearnWeb3Parser from "../services/checkLearnWeb3"
 import { User } from "../entities/User"
 import { BattlePass } from "../entities/BattlePass"
@@ -167,7 +169,7 @@ router.post("/daily/check", async (req: Request, res: Response) => {
                     continue
                 }
                 // Proceed with NFT minting and sending
-                const mintService = new MintSolanaNFTService(
+                const mintService = new MintArbitrumNFTService(
                     userName,
                     battlePass.id,
                     award.nftId,
@@ -175,7 +177,7 @@ router.post("/daily/check", async (req: Request, res: Response) => {
 
                 const nftPubkey = await mintService.mintNft()
 
-                const sendNFTService = new SendNFT(
+                const sendNFTService = new SendNFTArbitrumService(
                     destinationAddress,
                     nftPubkey,
                     1,
