@@ -18,4 +18,9 @@ export const config = {
         ? process.env.SECRET.split(",").map((num) => parseInt(num.trim(), 10))
         : [],
     jwtToken: process.env.JWT_TOKEN || "",
+    sepolia_arbitrum_private_key: process.env.SEPOLIA_ARBITRUM_PRIVATE_KEY,
+    sepolia_arbitrum_url: process.env.SEPOLIA_ARBITRUM_URL,
+    contractAddress: process.env.SEPOLIA_CONTRACT_ADDRESS,
+    ipfsApiUrl: process.env.IPFS_API_URL,
+    ipfsGatewayUrl: process.env.IPFS_GATEWAY_URL,
 }
