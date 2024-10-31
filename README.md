@@ -48,7 +48,7 @@ Our platform boosts course completion across different learning platforms with e
 
     If you have chosen this option, you can go straight to 4th step.
 
-2. If you did not choose sign in as a guest, before testing need to create account on [LearnWeb3](https://learnweb3.io/). It's the only platform we support for demo. Copy the link of your profile (it should look like `https://learnweb3.io/u/<UserNickname>/`). In the Wallet Address type your wallet from **Solana Devnet**.
+2. If you did not choose sign in as a guest, before testing need to create account on [LearnWeb3](https://learnweb3.io/). It's the only platform we support for demo. Copy the link of your profile (it should look like `https://learnweb3.io/u/<UserNickname>/`). In the Wallet Address type your wallet from **Devnet**.
 
     ![alt text](image-3.png)
 
